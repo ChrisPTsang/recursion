@@ -19,18 +19,37 @@ var stringifyJSON = function(obj) {
   }
   if (Array.isArray(obj)) {
     return '[' +
-      obj.map(function(value) {
+      _.map(obj, function(value) {
         return stringifyJSON(value);
       }).join(",") + ']';
   }
   if (typeof(obj) === 'object') {
-    var result = [];
+    
+    /* This works for most tests, until there are null values.  Can't find a way to have the result array not push in the _.map function.
+    
+    var result = _.map(obj, function(value, key) {
+      var prop = stringifyJSON(value);
+      if (prop !== null) {
+        return '"' + key + '"' + ":" + prop;
+      }
+    });
+    */
+    
+    /*
     for (var key in obj) {
       var value = stringifyJSON(obj[key]);
       if (value !== null) {
         result.push('"' + key + '"' + ":" + value);
       }
-    }
+    }*/
+
+    var result = [];
+    _.each(obj, function(value, key) {
+      var prop = stringifyJSON(value);
+      if (prop !== null) {
+        result.push('"' + key + '"' + ":" + prop);
+      }
+    });
     return "{" + result.join(",") + "}";
   }
 };
